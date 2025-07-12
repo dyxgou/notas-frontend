@@ -1,0 +1,26 @@
+---
+import type { SubjectKind } from "@/types/subjects";
+import { Image } from "astro:assets";
+interface Props {
+  subject: SubjectKind;
+  text: string;
+}
+
+const { subject, text } = Astro.props;
+---
+
+<a
+  href=`${subject}/`
+  transition:animate="fade"
+  class="flex items-center justify-center flex-col gap-4 bg-white text-lg sm:text-xl md:text-2xl w-full rounded-xl font-semibold p-10 shadow-md shadow-slate-600/50 transition duration-300 hover:scale-95 hover:bg-stone-200"
+>
+  <Image
+    width={40}
+    height={40}
+    loading="eager"
+    decoding="async"
+    alt="Subject"
+    src={`/subjects/${subject}.webp`}
+  />
+  {text}</a
+>

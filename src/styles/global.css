@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import "./table.css";
+
+@theme {
+  --color-default-100: #27272a;
+}
+
+.courses {
+  @apply w-fit mt-10 grid grid-cols-2 md:grid-cols-3 gap-5;
+}
+
+.table-nav {
+  @apply flex items-center text-xs sm:text-base gap-1 px-4 py-2 rounded-2xl text-black/80;
+}
+
+.table-nav > a {
+  @apply transition-[margin,color] duration-300 hover:mx-2 hover:text-blue-500;
+}

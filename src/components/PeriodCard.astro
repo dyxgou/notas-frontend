@@ -1,0 +1,26 @@
+---
+import { Image } from "astro:assets";
+interface Props {
+  period: number;
+  icon: `/periods/${string}.webp`;
+  text: string;
+}
+
+const { text, period, icon } = Astro.props;
+---
+
+<a
+  href={`${period}/`}
+  transition:animate="fade"
+  class="flex items-center gap-4 bg-stone-100 text-xl md:text-3xl w-full rounded-xl font-semibold p-10 shadow-md shadow-slate-600/50 transition duration-300 hover:scale-95 hover:bg-stone-200"
+>
+  <Image
+    width={40}
+    height={40}
+    loading="eager"
+    decoding="async"
+    alt="Period"
+    src={icon}
+  />
+  {text}</a
+>

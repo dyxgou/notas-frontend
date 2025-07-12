@@ -1,0 +1,79 @@
+---
+interface Props {
+  course: string;
+}
+---
+
+<form id="create-student-form" class="flex flex-col gap-3">
+  <label class="font-semibold text-base" for="name">Nombre</label>
+  <input
+    class="rounded-xl text-lg py-1 px-3 border-1 border-gray-400 transition-colors duration-300 invalid:border-rose-300 valid:border-blue-500 focus:border-gray-600"
+    type="text"
+    name="name"
+    required
+    minlength="4"
+    maxlength="30"
+    placeholder="eg. Diego Alejandro"
+  />
+
+  <label class="font-semibold text-base" for="parent_phone"
+    >Teléfono del Acudiente</label
+  >
+  <input
+    class="rounded-xl text-lg py-1 px-3 border-1 border-gray-400 transition-colors duration-300 invalid:border-rose-300 valid:border-blue-500 focus:border-gray-600"
+    type="text"
+    name="parent_phone"
+    required
+    minlength="10"
+    maxlength="10"
+    placeholder="eg. 321 560 4987"
+  />
+
+  <input type="hidden" name="course" value={Astro.props.course} />
+
+  <span
+    class="font-semibold wrap-break-word data-[invalid]:text-red-500 text-blue-500"
+    id="form-student-message"
+  >
+  </span>
+
+  <button
+    aria-describedby="form-student-message"
+    class="mt-5 w-full bg-blue-600 text-white rounded-3xl py-2 cursor-pointer"
+    type="submit"
+  >
+    Crear Estudiante
+  </button>
+</form>
+
+<script>
+  import { isInputError } from "astro:actions";
+  import { actions } from "astro:actions";
+
+  const formMessageId = "form-student-message";
+  const createStudentFormId = "create-student-form";
+
+  const form = document.getElementById(createStudentFormId) as HTMLFormElement;
+  const msg = document.getElementById(formMessageId) as HTMLSpanElement;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const fromData = new FormData(form);
+    const { error } = await actions.student.create(fromData);
+
+    if (!!error) {
+      msg.setAttribute("data-invalid", "true");
+
+      if (isInputError(error) && !!error.fields.parent_phone) {
+        msg.innerText = "El numeró de teléfono tiene que ser de 10 caracteres.";
+      }
+
+      msg.innerText =
+        "El estudiante no ha sido creado, porfavor reporta este caso.";
+      return;
+    }
+
+    msg.innerText = "El estudiante ha sido creado correctamente";
+  });
+</script>

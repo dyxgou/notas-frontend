@@ -1,0 +1,94 @@
+---
+import StudentPlus from "@/assets/studentPlus.svg";
+import SubjectPlus from "@/assets/subjectPlus.svg";
+import CreateStudentForm from "./CreateStudentForm.astro";
+import CreateGradeForm from "./CreateGradeForm.astro";
+
+interface Props {
+  course: string;
+  period: string;
+  subject: string;
+  subjectId: number;
+}
+
+const { course, period, subject, subjectId } = Astro.props;
+---
+
+<header
+  class="w-full sticky top-0 m-auto flex justify-between gap-4 items-center flex-col md:flex-row p-5"
+>
+  <ul class="flex gap-4 flex-col md:flex-row">
+    <li class="header-element">Curso: {course}</li>
+    <li class="header-element">Periodo: {period}</li>
+    <li class="header-element">Materia: {subject}</li>
+  </ul>
+
+  <div class="flex gap-4 w-full md:w-fit flex-col md:flex-row">
+    <button
+      id="open-add-grade"
+      class="grid place-items-center text-white bg-purple-500 px-5 py-2 rounded-xl cursor-pointer transition-colors duration-300 hover:bg-purple-600 w-full md:w-fit"
+      title="Añadir Nota"
+    >
+      <SubjectPlus />
+    </button>
+
+    <button
+      id="open-add-student"
+      class="grid place-items-center text-white bg-blue-500 px-5 py-2 rounded-xl cursor-pointer transition-colors duration-300 hover:bg-blue-600 w-full md:w-fit"
+      title="Añadir Estudiante"
+    >
+      <StudentPlus />
+    </button>
+  </div>
+  <dialog
+    class="m-auto rounded-xl border border-neutral-200 py-4 px-8 shadow-sm shadow-black/20"
+    id="add-student-dialog"
+    closedby="any"
+  >
+    <div class="flex flex-col gap-2">
+      <h3 class="font-semibold text-2xl">Introduce un Estudiante nuevo</h3>
+      <span class="text-sm text-gray-500">Asignatura: {subject}</span>
+    </div>
+    <div class="w-full h-[1px] bg-neutral-400/60 my-4 rounded-xl"></div>
+
+    <CreateStudentForm course={course} />
+  </dialog>
+
+  <dialog
+    class="m-auto rounded-xl border border-neutral-200 py-4 px-8 shadow-sm shadow-black/20"
+    id="add-grade-dialog"
+    closedby="any"
+  >
+    <div class="flex flex-col gap-2">
+      <h3 class="font-semibold text-2xl">Crea una nueva Nota</h3>
+      <span class="text-sm text-gray-500">Asignatura: {subject}</span>
+    </div>
+    <div class="w-full h-[1px] bg-neutral-400/60 my-4 rounded-xl"></div>
+
+    <CreateGradeForm id={subjectId} />
+  </dialog>
+</header>
+
+<script>
+  const registerDialog = (btnId: string, dialogId: string) => {
+    const open = document.getElementById(btnId);
+    const dialog = document.getElementById(dialogId) as HTMLDialogElement;
+
+    open?.addEventListener("click", () => {
+      dialog.showModal();
+    });
+  };
+
+  document.addEventListener("astro:page-load", () => {
+    console.log("Registrando forms");
+    const addStudentBtnId = "open-add-student";
+    const addStudentDialogId = "add-student-dialog";
+
+    registerDialog(addStudentBtnId, addStudentDialogId);
+
+    const addSubjectBtnId = "open-add-grade";
+    const addSubjectDialogId = "add-grade-dialog";
+
+    registerDialog(addSubjectBtnId, addSubjectDialogId);
+  });
+</script>

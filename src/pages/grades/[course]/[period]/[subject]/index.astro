@@ -1,0 +1,29 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getSubjects } from "@/utils/getPageMetadata";
+
+import Layout from "@/layouts/Layout.astro";
+import BackLight from "@/components/BackLight.astro";
+import Table from "@/components/Table/Table.astro";
+
+export const getStaticPaths = (() => {
+  return getSubjects();
+}) satisfies GetStaticPaths;
+
+const { subject, course, period } = Astro.params;
+
+const { title } = Astro.props;
+---
+
+<Layout>
+  <div class="overflow-x-auto max-w-full">
+    <Table
+      title={title}
+      name={subject}
+      course={course.toString()}
+      period={period.toString()}
+    />
+  </div>
+
+  <BackLight position="bottom" />
+</Layout>

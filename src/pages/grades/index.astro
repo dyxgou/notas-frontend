@@ -1,0 +1,18 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Card from "@/components/Card.astro";
+import { courses } from "@/utils/getPageMetadata.ts";
+---
+
+<Layout class="p-12 flex flex-col items-center">
+  <h2
+    class="text-center text-5xl font-semibold tracking-tight text-gray-900"
+    transition:animate="fade"
+  >
+    Cursos
+  </h2>
+
+  <nav class="courses">
+    {courses.map((course) => <Card text={course} />)}
+  </nav>
+</Layout>

@@ -1,0 +1,20 @@
+---
+import { actions } from "astro:actions";
+import Grade from "./Grade.astro";
+
+interface Props {
+  subjectId: number;
+}
+
+const { data, error } = await Astro.callAction(actions.grade.getAllGrades, {
+  subjectId: Astro.props.subjectId,
+});
+
+if (!!error) {
+  return Astro.redirect("/404");
+}
+
+console.table(data);
+---
+
+{data.map((grade) => <Grade gradeId={grade.id} grade={grade.name} />)}

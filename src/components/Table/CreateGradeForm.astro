@@ -1,0 +1,63 @@
+---
+interface Props {
+  id: number;
+}
+
+const { id } = Astro.props;
+---
+
+<form id="create-grade-form" class="flex flex-col gap-3">
+  <label class="font-semibold text-base" for="name">Nombre de la Nota</label>
+  <input
+    class="rounded-xl text-lg py-1 px-3 border-1 border-gray-400 transition-colors duration-300 invalid:border-rose-300 valid:border-blue-500 focus:border-gray-600"
+    type="text"
+    name="name"
+    required
+    minlength="4"
+    maxlength="15"
+  />
+
+  <input type="hidden" name="id" value={id} />
+
+  <span
+    class="font-semibold wrap-break-word data-[invalid]:text-red-500 text-blue-500"
+    id="form-grade-message"
+  >
+  </span>
+
+  <button
+    aria-describedby="form-grade-message"
+    class="mt-5 w-full bg-blue-600 text-white rounded-3xl py-2 cursor-pointer"
+    type="submit"
+  >
+    Crear Nota
+  </button>
+</form>
+
+<script>
+  import { actions } from "astro:actions";
+
+  const formMessageId = "form-grade-message";
+  const createStudentFormId = "create-grade-form";
+
+  const form = document.getElementById(createStudentFormId) as HTMLFormElement;
+  const msg = document.getElementById(formMessageId) as HTMLParagraphElement;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const { error } = await actions.grade.create(formData);
+    form.reset();
+
+    if (!!error) {
+      msg.setAttribute("data-invalid", "true");
+
+      msg.innerText = "La nota no ha podido ser creada.";
+      return;
+    }
+
+    msg.removeAttribute("data-invalid");
+    msg.innerText = "La nota ha sido creada correctamente.";
+  });
+</script>

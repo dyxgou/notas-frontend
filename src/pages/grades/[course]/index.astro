@@ -1,0 +1,32 @@
+---
+import type { GetStaticPaths } from "astro";
+import Layout from "@/layouts/Layout.astro";
+import PerdiodCard from "@/components/PeriodCard.astro";
+import { getCoursesAndTitles } from "@/utils/getPageMetadata";
+
+export const getStaticPaths = (() => {
+  return getCoursesAndTitles();
+}) satisfies GetStaticPaths;
+
+const { title } = Astro.props;
+---
+
+<Layout class="p-12 flex flex-col items-center">
+  <h2
+    class="text-center text-5xl font-semibold tracking-tight text-gray-900"
+    transition:animate="slide"
+  >
+    {title}
+  </h2>
+
+  <section class="w-fit mt-10 grid grid-cols-1 gap-5">
+    <PerdiodCard text="Primer Periodo" icon="/periods/spring.webp" period={1} />
+    <PerdiodCard
+      text="Segundo Periodo"
+      icon="/periods/summer.webp"
+      period={2}
+    />
+    <PerdiodCard text="Tercer Periodo" icon="/periods/autumn.webp" period={3} />
+    <PerdiodCard text="Cuarto Periodo" icon="/periods/winter.webp" period={4} />
+  </section>
+</Layout>

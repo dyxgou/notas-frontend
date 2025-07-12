@@ -1,0 +1,14 @@
+---
+interface Props {
+  text: number;
+}
+
+const { text } = Astro.props;
+---
+
+<a
+  href={`grades/${text}/`}
+  transition:animate="fade"
+  class="bg-slate-100 text-5xl rounded-xl font-semibold aspect-square p-10 shadow-sm shadow-slate-600/50 grid place-items-center transition duration-300 hover:scale-95 hover:bg-slate-200"
+  >{text === 0 ? "P" : text}</a
+>
