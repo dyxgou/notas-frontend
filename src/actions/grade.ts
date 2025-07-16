@@ -1,15 +1,11 @@
 import { ActionError, defineAction } from "astro:actions";
 import { getSecret } from "astro:env/server";
 import { z } from "astro:content";
+import type { Grade } from "@/store/grade";
 
 const SUCCESS_STATUS = 200;
 
 const API_URL = getSecret("API_URL");
-
-type Grade = {
-  id: number;
-  name: string;
-};
 
 export const grade = {
   create: defineAction({
@@ -32,11 +28,15 @@ export const grade = {
       });
 
       if (res.status != SUCCESS_STATUS) {
+        console.log(await res.text(), "creando nota");
         throw new ActionError({
           code: "BAD_REQUEST",
           message: "La nota no ha sido creada.",
         });
       }
+
+      const gradeId = (await res.json()) as { id: number };
+      return gradeId;
     },
   }),
 

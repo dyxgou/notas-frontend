@@ -1,4 +1,5 @@
-import type { Period, Subject } from "@/types/subjects";
+import { subject } from "@/actions/subject";
+import type { Period, Subject, SubjectKind } from "@/types/subjects";
 export const courses: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 const titles: string[] = [
@@ -35,64 +36,22 @@ const periods: Period[] = [
   },
 ];
 
-export const subjects: Subject[] = [
-  {
-    kind: "math",
-    title: "Matemáticas",
-  },
-  {
-    kind: "ethics",
-    title: "Ética",
-  },
-  {
-    kind: "religion",
-    title: "Religión",
-  },
-  {
-    kind: "tech",
-    title: "Informática",
-  },
-  {
-    kind: "art",
-    title: "Arte",
-  },
-  {
-    kind: "physics",
-    title: "Física",
-  },
-  {
-    kind: "chemistry",
-    title: "Química",
-  },
-  {
-    kind: "philosophy",
-    title: "Filosofía",
-  },
-  {
-    kind: "politics",
-    title: "Ciencias Políticas",
-  },
-  {
-    kind: "social",
-    title: "Ciencias Sociales",
-  },
-  {
-    kind: "spanish",
-    title: "Español",
-  },
-  {
-    kind: "english",
-    title: "Inglés",
-  },
-  {
-    kind: "sexual",
-    title: "Educación Sexual",
-  },
-  {
-    kind: "project",
-    title: "Proyecto",
-  },
-];
+export const subjects: Record<SubjectKind, string> = {
+  math: "Matemáticas",
+  ethics: "Ética",
+  religion: "Religión",
+  tech: "Informática",
+  art: "Arte",
+  physics: "Física",
+  chemistry: "Química",
+  philosophy: "Filosofía",
+  politics: "Ciencias Políticas",
+  social: "Ciencias Sociales",
+  spanish: "Español",
+  english: "Inglés",
+  sexual: "Educación Sexual",
+  project: "Proyecto",
+};
 
 export const getCoursesAndTitles = () => {
   return courses.map((course, i) => ({
@@ -110,13 +69,10 @@ export const getCoursesAndPeriods = () => {
   });
 };
 
-export const getSubjects = () => {
-  return courses.flatMap((course) => {
-    return periods.flatMap(({ period }) =>
-      subjects.map(({ kind, title }) => ({
-        params: { course, period, subject: kind },
-        props: { title },
-      })),
-    );
-  });
+export const getSubjectTitle = (subject: string): string | undefined => {
+  if (subject in subjects) {
+    return subjects[subject as SubjectKind];
+  }
+
+  return undefined;
 };

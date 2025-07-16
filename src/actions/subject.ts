@@ -32,7 +32,6 @@ export const subject = {
       });
 
       if (res.status != SUCCESS_STATUS) {
-        console.log(await res.text(), "input", JSON.stringify(input));
         throw new ActionError({
           code: "BAD_REQUEST",
           message: "La materia no ha sido creada o obtenida.",

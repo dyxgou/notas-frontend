@@ -1,15 +1,11 @@
 import { ActionError, defineAction } from "astro:actions";
+import type { Student } from "@/store/student";
 import { getSecret } from "astro:env/server";
 import { z } from "astro:schema";
 
 const SUCCESS_STATUS = 200;
 
 const API_URL = getSecret("API_URL");
-
-type Student = {
-  id: number;
-  name: string;
-};
 
 export const student = {
   getByCourse: defineAction({
@@ -60,6 +56,10 @@ export const student = {
             "El usuario no ha podido ser creado correctamente. Porfavor intentalo de nuevo mas tarde.",
         });
       }
+
+      const studentId = (await res.json()) as Student;
+
+      return studentId;
     },
   }),
 };

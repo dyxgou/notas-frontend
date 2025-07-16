@@ -1,0 +1,29 @@
+---
+import { actions } from "astro:actions";
+import Grades from "./Grades.svelte";
+import { setAllGrades } from "@/store/grade";
+
+interface Props {
+  subjectId: number;
+}
+
+const { subjectId } = Astro.props;
+
+const { data, error } = await Astro.callAction(actions.grade.getAllGrades, {
+  subjectId,
+});
+
+if (error) {
+  return Astro.redirect("/404");
+}
+
+setAllGrades(data);
+---
+
+<main class="bg-white w-full rounded-xl border border-gray-200 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50 border-b border-gray-300"> </thead>
+    </table>
+  </div>
+</main>

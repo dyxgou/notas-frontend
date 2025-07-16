@@ -1,79 +1,90 @@
 ---
 interface Props {
-  course: string;
+  course: number;
 }
 ---
 
-<form id="create-student-form" class="flex flex-col gap-3">
-  <label class="font-semibold text-base" for="name">Nombre</label>
+<form
+  method="dialog"
+  id="add-student-form"
+  class="flex flex-col gap-3"
+  aria-describedby="form-message"
+>
+  <label for="name" class="block text-sm font-medium text-gray-700">
+    Nombre del Estudiante
+  </label>
+
   <input
-    class="rounded-xl text-lg py-1 px-3 border-1 border-gray-400 transition-colors duration-300 invalid:border-rose-300 valid:border-blue-500 focus:border-gray-600"
     type="text"
     name="name"
     required
     minlength="4"
     maxlength="30"
-    placeholder="eg. Diego Alejandro"
+    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    placeholder="Introduce el nombre del Estudiante"
   />
 
-  <label class="font-semibold text-base" for="parent_phone"
-    >Teléfono del Acudiente</label
-  >
+  <label for="parent_phone" class="block text-sm font-medium text-gray-700">
+    Teléfono del Acudiente
+  </label>
+
   <input
-    class="rounded-xl text-lg py-1 px-3 border-1 border-gray-400 transition-colors duration-300 invalid:border-rose-300 valid:border-blue-500 focus:border-gray-600"
-    type="text"
+    type="tel"
     name="parent_phone"
     required
     minlength="10"
     maxlength="10"
-    placeholder="eg. 321 560 4987"
+    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    placeholder="Numeró telefónico"
   />
 
-  <input type="hidden" name="course" value={Astro.props.course} />
+  <input type="hidden" value={Astro.props.course} name="course" />
 
-  <span
-    class="font-semibold wrap-break-word data-[invalid]:text-red-500 text-blue-500"
+  <p
     id="form-student-message"
+    class="text-center font-medium text-blue-600 data-[failed]:text-rose-600"
   >
-  </span>
+  </p>
 
   <button
-    aria-describedby="form-student-message"
-    class="mt-5 w-full bg-blue-600 text-white rounded-3xl py-2 cursor-pointer"
+    class="mt-4 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 cursor-pointer"
     type="submit"
   >
-    Crear Estudiante
+    Añadir Estudiante
   </button>
 </form>
 
 <script>
-  import { isInputError } from "astro:actions";
   import { actions } from "astro:actions";
+  import { addStudent } from "@/store/student";
 
-  const formMessageId = "form-student-message";
-  const createStudentFormId = "create-student-form";
+  const formId = "add-student-form";
+  const msgId = "form-student-message";
 
-  const form = document.getElementById(createStudentFormId) as HTMLFormElement;
-  const msg = document.getElementById(formMessageId) as HTMLSpanElement;
+  document.addEventListener("astro:page-load", () => {
+    const form = document.getElementById(formId) as HTMLFormElement;
+    const msg = document.getElementById(msgId) as HTMLSpanElement;
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    const fromData = new FormData(form);
-    const { error } = await actions.student.create(fromData);
+      const formData = new FormData(form);
 
-    if (!!error) {
-      msg.setAttribute("data-invalid", "true");
+      const { data, error } = await actions.student.create(formData);
 
-      if (isInputError(error) && !!error.fields.parent_phone) {
-        msg.innerText = "El numeró de teléfono tiene que ser de 10 caracteres.";
+      if (error) {
+        msg.setAttribute("data-failed", "true");
+
+        msg.innerText =
+          "Ha ocurrido un error al crear el estudiante. Porfavor reporta este mensaje.";
+
+        return;
       }
 
-      msg.innerText =
-        "El estudiante no ha sido creado, porfavor reporta este caso.";
-      return;
-    }
+      form.reset();
 
-    msg.innerText = "El estudiante ha sido creado correctamente";
+      msg.innerText = "El estudiante ha sido creado correctamente.";
+      addStudent(data);
+    });
   });
 </script>

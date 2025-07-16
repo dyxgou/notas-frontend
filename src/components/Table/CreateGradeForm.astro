@@ -1,63 +1,87 @@
 ---
 interface Props {
-  id: number;
+  subjectId: number;
 }
 
-const { id } = Astro.props;
+const { subjectId } = Astro.props;
 ---
 
-<form id="create-grade-form" class="flex flex-col gap-3">
-  <label class="font-semibold text-base" for="name">Nombre de la Nota</label>
+<form
+  method="dialog"
+  id="add-grade-form"
+  class="flex flex-col gap-3"
+  aria-describedby="form-message"
+>
+  <label for="name" class="block text-sm font-medium text-gray-700">
+    Nombre de la Nota
+  </label>
+
   <input
-    class="rounded-xl text-lg py-1 px-3 border-1 border-gray-400 transition-colors duration-300 invalid:border-rose-300 valid:border-blue-500 focus:border-gray-600"
     type="text"
     name="name"
     required
-    minlength="4"
-    maxlength="15"
+    minlength="3"
+    maxlength="20"
+    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    placeholder="Introduce el nombre de la nota"
   />
+  <span class="font-light text-gray-600 text-sm">
+    El nombre debe tener un máximo de 15 caracteres.
+  </span>
 
-  <input type="hidden" name="id" value={id} />
+  <input type="hidden" name="id" value={subjectId} />
 
   <span
-    class="font-semibold wrap-break-word data-[invalid]:text-red-500 text-blue-500"
     id="form-grade-message"
+    class="text-center font-medium text-blue-600 data-[failed]:text-rose-600"
   >
   </span>
 
   <button
-    aria-describedby="form-grade-message"
-    class="mt-5 w-full bg-blue-600 text-white rounded-3xl py-2 cursor-pointer"
+    class="mt-4 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 cursor-pointer"
     type="submit"
   >
-    Crear Nota
+    Añadir Nota
   </button>
 </form>
 
 <script>
+  import { addGrade } from "@/store/grade";
   import { actions } from "astro:actions";
 
-  const formMessageId = "form-grade-message";
-  const createStudentFormId = "create-grade-form";
+  const formId = "add-grade-form";
+  const msgId = "form-grade-message";
 
-  const form = document.getElementById(createStudentFormId) as HTMLFormElement;
-  const msg = document.getElementById(formMessageId) as HTMLParagraphElement;
+  document.addEventListener("astro:page-load", () => {
+    const form = document.getElementById(formId) as HTMLFormElement;
+    const msg = document.getElementById(msgId) as HTMLSpanElement;
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    const formData = new FormData(form);
-    const { error } = await actions.grade.create(formData);
-    form.reset();
+      const formData = new FormData(form);
+      const { data, error } = await actions.grade.create(formData);
 
-    if (!!error) {
-      msg.setAttribute("data-invalid", "true");
+      if (error) {
+        msg.setAttribute("data-failed", "true");
 
-      msg.innerText = "La nota no ha podido ser creada.";
-      return;
-    }
+        msg.innerText =
+          "Ha ocurrido un error al crear la nota. Porfavor reporta este mensaje.";
 
-    msg.removeAttribute("data-invalid");
-    msg.innerText = "La nota ha sido creada correctamente.";
+        return;
+      }
+
+      form.reset();
+      msg.innerText = "La nota ha sido creada correctamente.";
+
+      const subjectId = parseInt(formData.get("id")!.toString());
+      const name = formData.get("name")!.toString();
+
+      addGrade({
+        id: data.id,
+        subjectId,
+        name,
+      });
+    });
   });
 </script>

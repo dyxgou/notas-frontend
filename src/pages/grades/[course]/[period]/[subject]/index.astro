@@ -1,29 +1,46 @@
 ---
-import type { GetStaticPaths } from "astro";
-import { getSubjects } from "@/utils/getPageMetadata";
+export const prerender = false;
 
+import { actions } from "astro:actions";
 import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Table/Header.astro";
+import Toolbar from "@/components/Table/Toolbar.astro";
 import BackLight from "@/components/BackLight.astro";
-import Table from "@/components/Table/Table.astro";
-
-export const getStaticPaths = (() => {
-  return getSubjects();
-}) satisfies GetStaticPaths;
+import GradeTable from "@/components/Table/GradeTable.astro";
+import { isInputError } from "astro:actions";
+import { getSubjectTitle } from "@/utils/getPageMetadata";
 
 const { subject, course, period } = Astro.params;
 
-const { title } = Astro.props;
+if (!subject || !period) {
+  return Astro.redirect("/404");
+}
+
+const title = getSubjectTitle(subject);
+
+if (!title) {
+  return Astro.redirect("/404");
+}
+
+const { data, error } = await Astro.callAction(actions.subject.create, {
+  name: subject,
+  course: parseInt(course!),
+  period: parseInt(period),
+});
+
+if (isInputError(error) || !data) {
+  return Astro.redirect("/404");
+}
 ---
 
 <Layout>
-  <div class="overflow-x-auto max-w-full">
-    <Table
-      title={title}
-      name={subject}
-      course={course.toString()}
-      period={period.toString()}
-    />
-  </div>
+  <div
+    class="overflow-x-auto max-w-full m-3 p-6 bg-gray-100/70 rounded-xl backdrop-blur-2xl"
+  >
+    <Header subject={title} course={data.course} period={data.period} />
+    <Toolbar course={data.course} subjectId={data.id} />
 
+    <GradeTable subjectId={data.id} />
+  </div>
   <BackLight position="bottom" />
 </Layout>

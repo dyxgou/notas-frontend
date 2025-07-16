@@ -1,0 +1,136 @@
+---
+import Cross from "@/assets/cross.svg";
+import Plus from "@/assets/plus.svg";
+import CreateGradeForm from "./CreateGradeForm.astro";
+import CreateStudentForm from "./CreateStudentForm.astro";
+
+interface Props {
+  course: number;
+  subjectId: number;
+}
+
+const { course, subjectId } = Astro.props;
+---
+
+<div class="flex items-center gap-4 mb-6">
+  <div class="relative">
+    <svg
+      class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+    </svg>
+    <input
+      type="text"
+      placeholder="Buscar Estudiantes..."
+      class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+      id="searchInput"
+    />
+  </div>
+  <div class="flex gap-2 ml-auto">
+    <button
+      class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-2 cursor-pointer"
+      id="open-add-grade"
+      commandfor="add-grade-dialog"
+      command="open"
+    >
+      <Plus />
+      Añadir Notas
+    </button>
+
+    <dialog
+      class="bg-white rounded-xl p-6 w-full max-w-md m-auto"
+      id="add-grade-dialog"
+      closedby="any"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900">Añadir nueva Nota</h3>
+        <button class="text-gray-400 hover:text-gray-600" id="close-add-grade">
+          <Cross />
+        </button>
+      </div>
+
+      <CreateGradeForm subjectId={subjectId} />
+    </dialog>
+
+    <button
+      class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
+      id="open-add-student"
+    >
+      <Plus />
+      Añadir Estudiantes
+    </button>
+
+    <dialog
+      class="bg-white rounded-xl p-6 w-full max-w-md m-auto"
+      id="add-student-dialog"
+      closedby="any"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900">
+          Añadir Estudiante Nuevo
+        </h3>
+        <button
+          class="text-gray-400 hover:text-gray-600"
+          id="close-add-student"
+        >
+          <Cross />
+        </button>
+      </div>
+
+      <CreateStudentForm course={course} />
+    </dialog>
+  </div>
+</div>
+
+<script>
+  const registerDialog = (
+    openBtnId: string,
+    closeBtnId: string,
+    dialogId: string,
+  ) => {
+    const openBtn = document.getElementById(openBtnId) as HTMLButtonElement;
+    const closeBtn = document.getElementById(closeBtnId) as HTMLButtonElement;
+    const dialog = document.getElementById(dialogId) as HTMLDialogElement;
+
+    openBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      dialog.showModal();
+    });
+
+    closeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      dialog.close();
+    });
+  };
+
+  const addGradeIds = {
+    open: "open-add-grade",
+    close: "close-add-grade",
+    dialog: "add-grade-dialog",
+  } as const;
+
+  const addStudentIds = {
+    open: "open-add-student",
+    close: "close-add-student",
+    dialog: "add-student-dialog",
+  } as const;
+
+  document.addEventListener("astro:page-load", () => {
+    registerDialog(addGradeIds.open, addGradeIds.close, addGradeIds.dialog);
+
+    registerDialog(
+      addStudentIds.open,
+      addStudentIds.close,
+      addStudentIds.dialog,
+    );
+  });
+</script>

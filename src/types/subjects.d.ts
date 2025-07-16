@@ -14,11 +14,6 @@ type SubjectKind =
   | "sexual"
   | "project";
 
-export type Subject = {
-  kind: SubjectKind;
-  title: string;
-};
-
 export type Period = {
   period: number;
   title: string;
