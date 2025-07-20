@@ -11,15 +11,17 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/node": "^9.3.0",
-    "@astrojs/svelte": "^7.1.0",
+    "@astrojs/preact": "^4.1.0",
+    "@nanostores/preact": "^1.0.0",
     "@tailwindcss/vite": "^4.1.10",
     "astro": "^5.10.1",
     "nanostores": "^1.0.1",
-    "prettier": "^3.6.0",
-    "prettier-plugin-astro": "^0.14.1",
-    "prettier-plugin-svelte": "^3.4.0",
-    "svelte": "^5.36.4",
+    "preact": "^10.26.9",
     "tailwindcss": "^4.1.10",
     "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.0",
+    "prettier-plugin-astro": "^0.14.1"
   }
 }

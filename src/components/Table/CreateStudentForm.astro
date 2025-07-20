@@ -61,30 +61,34 @@ interface Props {
   const formId = "add-student-form";
   const msgId = "form-student-message";
 
-  document.addEventListener("astro:page-load", () => {
-    const form = document.getElementById(formId) as HTMLFormElement;
-    const msg = document.getElementById(msgId) as HTMLSpanElement;
+  document.addEventListener(
+    "astro:page-load",
+    () => {
+      const form = document.getElementById(formId) as HTMLFormElement;
+      const msg = document.getElementById(msgId) as HTMLSpanElement;
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-      const formData = new FormData(form);
+        const formData = new FormData(form);
 
-      const { data, error } = await actions.student.create(formData);
+        const { data, error } = await actions.student.create(formData);
 
-      if (error) {
-        msg.setAttribute("data-failed", "true");
+        if (error) {
+          msg.setAttribute("data-failed", "true");
 
-        msg.innerText =
-          "Ha ocurrido un error al crear el estudiante. Porfavor reporta este mensaje.";
+          msg.innerText =
+            "Ha ocurrido un error al crear el estudiante. Porfavor reporta este mensaje.";
 
-        return;
-      }
+          return;
+        }
 
-      form.reset();
+        form.reset();
 
-      msg.innerText = "El estudiante ha sido creado correctamente.";
-      addStudent(data);
-    });
-  });
+        msg.innerText = "El estudiante ha sido creado correctamente.";
+        addStudent(data);
+      });
+    },
+    { once: true },
+  );
 </script>

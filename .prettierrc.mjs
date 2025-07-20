@@ -1,10 +1,10 @@
 // .prettierrc.mjs
 /** @type {import("prettier").Config} */
 export default {
-  plugins: ["prettier-plugin-astro", "prettier-plugin-svelte"],
+  plugins: ["prettier-plugin-astro"],
   overrides: [
     {
-      files: ["*.astro", "*.svelte"],
+      files: ["*.astro"],
       options: {
         parser: "astro",
       },

@@ -4,8 +4,9 @@ import { z } from "astro:content";
 import type { Grade } from "@/store/grade";
 
 const SUCCESS_STATUS = 200;
+const CONFLICT_STATUS = 409;
 
-const API_URL = getSecret("API_URL");
+const API_URL = getSecret("PUBLIC_API_URL");
 
 export const grade = {
   create: defineAction({
@@ -28,7 +29,15 @@ export const grade = {
       });
 
       if (res.status != SUCCESS_STATUS) {
-        console.log(await res.text(), "creando nota");
+        console.log(await res.text());
+        if (res.status === CONFLICT_STATUS) {
+          throw new ActionError({
+            code: "CONFLICT",
+            message:
+              "La cantidad máxima de notas que puede haber en una materia es 10.",
+          });
+        }
+
         throw new ActionError({
           code: "BAD_REQUEST",
           message: "La nota no ha sido creada.",
@@ -61,6 +70,33 @@ export const grade = {
       const grades = (await res.json()) as Grade[];
 
       return grades;
+    },
+  }),
+
+  changeName: defineAction({
+    input: z.object({
+      id: z.number(),
+      name: z.string().min(3).max(15),
+    }),
+
+    async handler({ id, name }) {
+      const res = await fetch(`${API_URL}/api/grade/name`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          name,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new ActionError({
+          code: "BAD_REQUEST",
+          message: "No se ha podido cambiar el nombre de la nota.",
+        });
+      }
     },
   }),
 };

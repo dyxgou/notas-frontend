@@ -1,0 +1,54 @@
+---
+import Grades from "./Grades/Grades.tsx";
+
+interface Props {
+  subjectId: number;
+  course: number;
+}
+
+const { subjectId, course } = Astro.props;
+console.log({ course, subjectId });
+---
+
+<main class="bg-white w-full rounded-xl border border-gray-200 overflow-hidden">
+  <div
+    class="overflow-x-auto"
+    id="grades-container"
+    data-course={course}
+    data-subjectId={subjectId}
+  >
+    <Grades client:only />
+  </div>
+</main>
+
+<script>
+  import { fetchAllGrades } from "@/utils/fetchGrades";
+  import { fetchStudentsByCourse } from "@/utils/fetchStudent";
+  import { navigate } from "astro:transitions/client";
+
+  const subjectIdAttr = "data-subjectId";
+  const courseAttr = "data-course";
+  const tableGradesId = "grades-container";
+  const table = document.getElementById(tableGradesId) as HTMLTableElement;
+
+  const subjectId = table.getAttribute(subjectIdAttr);
+  const course = table.getAttribute(courseAttr);
+
+  if (!subjectId || !course) {
+    navigate("/404");
+  }
+
+  document.addEventListener("astro:page-load", async () => {
+    console.log("Cargando pagina");
+    const gradesError = await fetchAllGrades(parseInt(subjectId!));
+
+    if (gradesError) {
+      navigate("/404");
+    }
+
+    const studentError = await fetchStudentsByCourse(parseInt(course!));
+    if (studentError) {
+      navigate("/404");
+    }
+  });
+</script>

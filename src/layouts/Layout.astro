@@ -1,7 +1,6 @@
 ---
 import "@/styles/global.css";
 import BackLight from "@/components/BackLight.astro";
-import { ClientRouter } from "astro:transitions";
 
 interface Props {
   class?: string;
@@ -18,7 +17,6 @@ const { class: className } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>Sistemas de Administración de Notas</title>
-    <ClientRouter />
   </head>
   <body class:list={["w-screen h-screen", [className]]}>
     <BackLight />

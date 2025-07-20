@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 import node from "@astrojs/node";
 
-import svelte from "@astrojs/svelte";
+import preact from "@astrojs/preact";
 
 // https://astro.build/config
 export default defineConfig({
@@ -17,5 +17,6 @@ export default defineConfig({
     mode: "standalone",
   }),
 
-  integrations: [svelte()],
+  integrations: [preact({ compat: true })],
 });
+

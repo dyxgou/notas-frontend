@@ -4,7 +4,7 @@ import { getSecret } from "astro:env/server";
 
 const SUCCESS_STATUS = 200;
 
-const API_URL = getSecret("API_URL");
+const API_URL = getSecret("PUBLIC_API_URL");
 
 type Subject = {
   id: number;

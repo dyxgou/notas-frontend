@@ -5,7 +5,7 @@ import { z } from "astro:schema";
 
 const SUCCESS_STATUS = 200;
 
-const API_URL = getSecret("API_URL");
+const API_URL = getSecret("PUBLIC_API_URL");
 
 export const student = {
   getByCourse: defineAction({
@@ -14,7 +14,7 @@ export const student = {
     }),
 
     handler: async ({ course }) => {
-      const res = await fetch(`${API_URL}/api/student/${course}`);
+      const res = await fetch(`${API_URL}/api/student/course/${course}`);
 
       if (res.status != SUCCESS_STATUS) {
         throw new ActionError({
@@ -60,6 +60,78 @@ export const student = {
       const studentId = (await res.json()) as Student;
 
       return studentId;
+    },
+  }),
+
+  getParentPhone: defineAction({
+    input: z.object({
+      id: z.number(),
+    }),
+    async handler({ id }) {
+      const res = await fetch(`${API_URL}/api/student/parent/${id}`);
+      if (!res.ok) {
+        console.log(await res.text());
+        throw new ActionError({
+          code: "NOT_FOUND",
+          message:
+            "El número de teléfono del estudiante no ha sido encontrado.",
+        });
+      }
+
+      const parentPhone = (await res.json()) as { parent_phone: string };
+      return parentPhone;
+    },
+  }),
+
+  changeName: defineAction({
+    input: z.object({
+      id: z.number(),
+      name: z.string(),
+    }),
+
+    async handler({ id, name }) {
+      const res = await fetch(`${API_URL}/api/student/change/name`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id, name }),
+      });
+
+      if (!res.ok) {
+        throw new ActionError({
+          code: "BAD_REQUEST",
+          message: "El estudiante no ha sido encontrado.",
+        });
+      }
+    },
+  }),
+
+  changeParentPhone: defineAction({
+    input: z.object({
+      id: z.number(),
+      parent_phone: z.string().length(10),
+    }),
+
+    async handler({ id, parent_phone }) {
+      const res = await fetch(`${API_URL}/api/student/change/phone`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          parent_phone,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new ActionError({
+          code: "BAD_REQUEST",
+          message:
+            "No se ha podido cambiar el numeró telefónico del estudiante.",
+        });
+      }
     },
   }),
 };

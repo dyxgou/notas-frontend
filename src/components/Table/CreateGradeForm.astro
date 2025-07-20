@@ -21,7 +21,7 @@ const { subjectId } = Astro.props;
     name="name"
     required
     minlength="3"
-    maxlength="20"
+    maxlength="15"
     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
     placeholder="Introduce el nombre de la nota"
   />
@@ -52,36 +52,45 @@ const { subjectId } = Astro.props;
   const formId = "add-grade-form";
   const msgId = "form-grade-message";
 
-  document.addEventListener("astro:page-load", () => {
-    const form = document.getElementById(formId) as HTMLFormElement;
-    const msg = document.getElementById(msgId) as HTMLSpanElement;
+  document.addEventListener(
+    "astro:page-load",
+    () => {
+      const form = document.getElementById(formId) as HTMLFormElement;
+      const msg = document.getElementById(msgId) as HTMLSpanElement;
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-      const formData = new FormData(form);
-      const { data, error } = await actions.grade.create(formData);
+        const formData = new FormData(form);
+        const { data, error } = await actions.grade.create(formData);
 
-      if (error) {
-        msg.setAttribute("data-failed", "true");
+        if (error) {
+          msg.setAttribute("data-failed", "true");
 
-        msg.innerText =
-          "Ha ocurrido un error al crear la nota. Porfavor reporta este mensaje.";
+          if (error.code === "CONFLICT") {
+            msg.innerText = error.message;
+            return;
+          }
 
-        return;
-      }
+          msg.innerText =
+            "Ha ocurrido un error al crear la nota. Porfavor reporta este mensaje.";
 
-      form.reset();
-      msg.innerText = "La nota ha sido creada correctamente.";
+          return;
+        }
 
-      const subjectId = parseInt(formData.get("id")!.toString());
-      const name = formData.get("name")!.toString();
+        form.reset();
+        msg.innerText = "La nota ha sido creada correctamente.";
 
-      addGrade({
-        id: data.id,
-        subjectId,
-        name,
+        const subjectId = parseInt(formData.get("id")!.toString());
+        const name = formData.get("name")!.toString();
+
+        addGrade({
+          id: data.id,
+          subjectId,
+          name,
+        });
       });
-    });
-  });
+    },
+    { once: true },
+  );
 </script>
