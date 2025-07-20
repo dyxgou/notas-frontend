@@ -4,7 +4,7 @@ import StudentBody from "../Students/StudentBody.tsx";
 
 const Grades: FunctionalComponent = () => {
   return (
-    <table className="w-full">
+    <table className="w-full table-auto">
       <GradesHeader />
       <StudentBody />
     </table>

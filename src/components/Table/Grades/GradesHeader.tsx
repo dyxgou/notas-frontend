@@ -9,8 +9,8 @@ const GradesHeader: FunctionalComponent = () => {
   return (
     <thead>
       <tr className="sticky left-0 top-0 border-b border-b-gray-300">
-        <th className="sticky left-0 z-10 bg-gray-50 px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300 md:min-w-[200px] max-w-fit">
-          Estudiante
+        <th className="sticky left-0 z-10 bg-gray-50 px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider border-r border-gray-300 md:min-w-[200px]">
+          Estudiantes
         </th>
 
         {$grades.map((grade) => (
