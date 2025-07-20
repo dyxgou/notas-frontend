@@ -7,7 +7,6 @@ interface Props {
 }
 
 const { subjectId, course } = Astro.props;
-console.log({ course, subjectId });
 ---
 
 <main class="bg-white w-full rounded-xl border border-gray-200 overflow-hidden">
@@ -22,8 +21,7 @@ console.log({ course, subjectId });
 </main>
 
 <script>
-  import { fetchAllGrades } from "@/utils/fetchGrades";
-  import { fetchStudentsByCourse } from "@/utils/fetchStudent";
+  import { setCourse, setSubjectId } from "@/store/config";
   import { navigate } from "astro:transitions/client";
 
   const subjectIdAttr = "data-subjectId";
@@ -39,16 +37,7 @@ console.log({ course, subjectId });
   }
 
   document.addEventListener("astro:page-load", async () => {
-    console.log("Cargando pagina");
-    const gradesError = await fetchAllGrades(parseInt(subjectId!));
-
-    if (gradesError) {
-      navigate("/404");
-    }
-
-    const studentError = await fetchStudentsByCourse(parseInt(course!));
-    if (studentError) {
-      navigate("/404");
-    }
+    setCourse(parseInt(course!));
+    setSubjectId(parseInt(subjectId!));
   });
 </script>

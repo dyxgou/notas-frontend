@@ -1,5 +1,7 @@
 import { actions } from "astro:actions";
 import { atom, onMount, onSet, task } from "nanostores";
+import { $course } from "./config";
+import { navigate } from "astro:transitions/client";
 
 export type Student = {
   id: number;
@@ -9,6 +11,20 @@ export type Student = {
 };
 
 export const students = atom<Student[]>([]);
+
+onMount(students, () => {
+  task(async () => {
+    const { data, error } = await actions.student.getByCourse({
+      course: $course.get(),
+    });
+
+    if (error || !data) {
+      navigate("/404");
+    }
+
+    students.set(data!);
+  });
+});
 
 onSet(students, ({ newValue }) => {
   newValue.sort((a, b) => {
