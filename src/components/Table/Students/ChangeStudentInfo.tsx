@@ -65,7 +65,6 @@ const ChangeStudentInfo: FunctionalComponent<ChangeStudentProps> = ({
     }
 
     if (parentPhone !== formData.get("parent_phone")) {
-      console.log("Cambiando número");
       const newParentPhone = formData.get("parent_phone")!.toString();
 
       const { error } = await actions.student.changeParentPhone({
@@ -80,6 +79,7 @@ const ChangeStudentInfo: FunctionalComponent<ChangeStudentProps> = ({
       }
 
       setMsg("La información del estudiante ha sido cambiada correctamente.");
+      setParentPhone(newParentPhone);
     }
   };
 

@@ -1,5 +1,4 @@
-import { actions } from "astro:actions";
-import { atom, onMount, onSet, task } from "nanostores";
+import { atom, onSet } from "nanostores";
 
 export type Student = {
   id: number;

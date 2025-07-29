@@ -2,6 +2,8 @@ import { students } from "@/store/student";
 import { useStore } from "@nanostores/preact";
 import Student from "./Student";
 import type { FunctionalComponent } from "preact";
+import Notes from "../Notes/Notes";
+import Average from "../Notes/Average";
 
 const StudentBody: FunctionalComponent = () => {
   const $students = useStore(students);
@@ -11,6 +13,10 @@ const StudentBody: FunctionalComponent = () => {
       {$students.map(({ id, name }, index) => (
         <tr className="hover:bg-gray-100 transition-colors duration-150">
           <Student id={id} name={name} index={index} />
+
+          <Notes studentId={id} />
+
+          <Average studentId={id} />
         </tr>
       ))}
     </tbody>
