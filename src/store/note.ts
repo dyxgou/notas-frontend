@@ -1,5 +1,4 @@
 import { atom } from "nanostores";
-import { isForOfStatement, walkUpBindingElementsAndPatterns } from "typescript";
 
 export type Note = {
   id: number;

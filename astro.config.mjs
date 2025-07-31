@@ -16,3 +16,4 @@ export default defineConfig({
   integrations: [preact({ compat: true })],
   adapter: vercel(),
 });
+

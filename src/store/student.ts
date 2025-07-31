@@ -1,4 +1,4 @@
-import { atom, onSet } from "nanostores";
+import { atom } from "nanostores";
 
 export type Student = {
   id: number;
@@ -8,12 +8,6 @@ export type Student = {
 };
 
 export const students = atom<Student[]>([]);
-
-onSet(students, ({ newValue }) => {
-  newValue.sort((a, b) => {
-    return a.name.localeCompare(b.name);
-  });
-});
 
 export function addStudent(student: Student) {
   const newStudents = [...students.get(), student];

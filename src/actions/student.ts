@@ -134,4 +134,25 @@ export const student = {
       }
     },
   }),
+
+  delete: defineAction({
+    input: z.object({
+      id: z.number(),
+    }),
+
+    async handler({ id }) {
+      const res = await fetch(`${API_URL}/api/student/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        console.log(await res.text());
+
+        throw new ActionError({
+          code: "NOT_FOUND",
+          message: "El estudiante no ha podido ser eliminado.",
+        });
+      }
+    },
+  }),
 };

@@ -1,5 +1,4 @@
-import { subject } from "@/actions/subject";
-import type { Period, Subject, SubjectKind } from "@/types/subjects";
+import type { Period, SubjectKind } from "@/types/subjects";
 export const courses: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 const titles: string[] = [

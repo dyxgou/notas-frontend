@@ -34,12 +34,30 @@ const ChangeStudentInfo: FunctionalComponent<ChangeStudentProps> = ({
       setParentPhone(data.parent_phone);
     };
 
-    dialogRef.current!.onclose = () => {
-      setMsg("");
-    };
-
     getParentPhone();
+
+    dialogRef.current?.addEventListener("close", () => {
+      setMsg("");
+    });
   }, []);
+
+  const handleDelete = async (e: TargetedEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (!confirm("¿Quieres eliminar a este estudiante?")) {
+      return;
+    }
+
+    const { error } = await actions.student.delete({ id });
+
+    if (error) {
+      setMsg(error.message);
+      setIsMsgError(true);
+      return;
+    }
+
+    location.reload();
+  };
 
   const handleSubmit = async (e: TargetedEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -121,6 +139,7 @@ const ChangeStudentInfo: FunctionalComponent<ChangeStudentProps> = ({
         name="name"
         placeholder={name}
         value={name}
+        autocomplete="off"
         required
         minlength={4}
         maxlength={30}
@@ -160,6 +179,14 @@ const ChangeStudentInfo: FunctionalComponent<ChangeStudentProps> = ({
           Actualizar Estudiante
         </button>
       </div>
+
+      <button
+        onClick={handleDelete}
+        class="px-4 py-2 mt-5 text-sm w-full font-medium text-white bg-red-500 transition-colors duration-300 rounded-md hover:bg-red-600 cursor-pointer"
+        type="submit"
+      >
+        Eliminar Estudiante
+      </button>
     </form>
   );
 };
